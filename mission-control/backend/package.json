@@ -2,11 +2,11 @@
   "name": "mission-control-backend",
   "version": "1.0.0",
   "description": "Multi-agent AI orchestration platform - Backend API",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "test": "jest",
     "test-agent": "ts-node --files scripts/test-agent.ts",
     "lint": "eslint src --ext .ts"
