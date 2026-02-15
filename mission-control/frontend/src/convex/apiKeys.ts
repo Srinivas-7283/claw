@@ -30,3 +30,34 @@ export const create = mutation({
         });
     },
 });
+
+export const save = mutation({
+    args: {
+        workspaceId: v.id("workspaces"),
+        provider: v.string(),
+        encryptedKey: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const existing = await ctx.db
+            .query("apiKeys")
+            .withIndex("by_workspace", (q) => q.eq("workspaceId", args.workspaceId))
+            .filter((q) => q.eq(q.field("provider"), args.provider))
+            .first();
+
+        if (existing) {
+            return await ctx.db.patch(existing._id, {
+                encryptedKey: args.encryptedKey,
+                isActive: true,
+                lastValidated: Date.now(),
+            });
+        }
+
+        return await ctx.db.insert("apiKeys", {
+            workspaceId: args.workspaceId,
+            provider: args.provider as any,
+            encryptedKey: args.encryptedKey,
+            isActive: true,
+            lastValidated: Date.now(),
+        });
+    },
+});
