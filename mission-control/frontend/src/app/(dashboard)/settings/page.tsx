@@ -22,6 +22,28 @@ export default function SettingsPage() {
     // Messaging State
     const [telegramToken, setTelegramToken] = useState("");
 
+    // Load saved API keys when data changes
+    useEffect(() => {
+        if (apiKeys && apiKeys.length > 0) {
+            const openai = apiKeys.find((k: any) => k.provider === "openai");
+            const anthropic = apiKeys.find((k: any) => k.provider === "anthropic");
+            if (openai) setOpenaiKey(openai.encryptedKey);
+            if (anthropic) setAnthropicKey(anthropic.encryptedKey);
+        }
+    }, [apiKeys]);
+
+    // Load saved Telegram credentials
+    useEffect(() => {
+        if (telegramCreds) {
+            try {
+                const creds = JSON.parse(telegramCreds.credentials);
+                if (creds.botToken) setTelegramToken(creds.botToken);
+            } catch (e) {
+                setTelegramToken(telegramCreds.externalId || "");
+            }
+        }
+    }, [telegramCreds]);
+
     // Mutations
     const saveApiKey = useMutation(api.apiKeys.save);
     const saveMessaging = useMutation(api.messaging.save);
