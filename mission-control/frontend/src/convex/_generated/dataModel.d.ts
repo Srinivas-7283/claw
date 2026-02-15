@@ -58,3 +58,24 @@ export type Id<TableName extends TableNames | SystemTableNames> =
  * `mutationGeneric` to make them type-safe.
  */
 export type DataModel = DataModelFromSchemaDefinition<typeof schema>;
+
+// Manual patch for messagingCredentials to include externalId until codegen
+declare module "./dataModel" {
+  interface DataModel {
+    messagingCredentials: {
+      document: {
+        _id: Id<"messagingCredentials">;
+        _creationTime: number;
+        workspaceId: Id<"workspaces">;
+        channel: "telegram" | "whatsapp";
+        credentials: string;
+        isActive: boolean;
+        externalId?: string;
+      };
+      indexes: {
+        by_workspace: ["workspaceId"];
+        by_external_id: ["externalId"];
+      };
+    };
+  }
+}

@@ -59,7 +59,10 @@ export default defineSchema({
         ),
         credentials: v.string(), // JSON string of encrypted credentials
         isActive: v.boolean(),
-    }).index("by_workspace", ["workspaceId"]),
+        externalId: v.optional(v.string()), // Public identifier (e.g. Bot Token)
+    })
+        .index("by_workspace", ["workspaceId"])
+        .index("by_external_id", ["externalId"]),
 
     telegramChats: defineTable({
         workspaceId: v.id("workspaces"),
