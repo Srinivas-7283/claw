@@ -28,7 +28,7 @@ export default function SettingsPage() {
 
     const handleSaveApiKeys = async () => {
         if (!workspaceId) {
-            toast.error("No workspace found");
+            alert("No workspace found");
             return;
         }
         if (openaiKey) {
@@ -42,7 +42,7 @@ export default function SettingsPage() {
 
     const handleSaveMessaging = async () => {
         if (!workspaceId) {
-            toast.error("No workspace found");
+            alert("No workspace found");
             return;
         }
         if (telegramToken) {
