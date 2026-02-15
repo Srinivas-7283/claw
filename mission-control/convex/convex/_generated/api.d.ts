@@ -17,6 +17,7 @@ import type * as messaging from "../messaging.js";
 import type * as tasks from "../tasks.js";
 import type * as telegram from "../telegram.js";
 import type * as usageMetrics from "../usageMetrics.js";
+import type * as workspaces from "../workspaces.js";
 
 import type {
   ApiFromModules,
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   tasks: typeof tasks;
   telegram: typeof telegram;
   usageMetrics: typeof usageMetrics;
+  workspaces: typeof workspaces;
 }>;
 
 /**

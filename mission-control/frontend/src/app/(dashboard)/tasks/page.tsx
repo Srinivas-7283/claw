@@ -13,13 +13,14 @@ const COLUMNS = [
 ];
 
 export default function TasksPage() {
-    const workspaceId = "m175gc4gzmhv2r05f0a4mw53rh814jv5" as any; // Real ID
+    const workspace = useQuery(api.workspaces.getDefault);
+    const workspaceId = workspace?._id;
 
     // Fetch tasks for each status
-    const inboxTasks = useQuery(api.tasks.listPending, { workspaceId, status: "inbox" }) || [];
-    const assignedTasks = useQuery(api.tasks.listPending, { workspaceId, status: "assigned" }) || [];
-    const inProgressTasks = useQuery(api.tasks.listPending, { workspaceId, status: "in_progress" }) || [];
-    const doneTasks = useQuery(api.tasks.listPending, { workspaceId, status: "done" }) || [];
+    const inboxTasks = useQuery(api.tasks.listPending, workspaceId ? { workspaceId, status: "inbox" } : "skip") || [];
+    const assignedTasks = useQuery(api.tasks.listPending, workspaceId ? { workspaceId, status: "assigned" } : "skip") || [];
+    const inProgressTasks = useQuery(api.tasks.listPending, workspaceId ? { workspaceId, status: "in_progress" } : "skip") || [];
+    const doneTasks = useQuery(api.tasks.listPending, workspaceId ? { workspaceId, status: "done" } : "skip") || [];
 
     const getTasks = (status: string) => {
         switch (status) {

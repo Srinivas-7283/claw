@@ -3,12 +3,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Bot, Power, Activity } from "lucide-react";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 export default function AgentsPage() {
-    const workspaceId = "m175gc4gzmhv2r05f0a4mw53rh814jv5" as any;
-    const agents = useQuery(api.agents.list, { workspaceId }) || [];
+    const workspace = useQuery(api.workspaces.getDefault);
+    const workspaceId = workspace?._id;
+    const agents = useQuery(api.agents.list, workspaceId ? { workspaceId } : "skip") || [];
+    const createAgent = useMutation(api.agents.create);
 
     return (
         <div className="space-y-6">

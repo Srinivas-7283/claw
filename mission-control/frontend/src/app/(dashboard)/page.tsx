@@ -1,14 +1,23 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
+import { useEffect } from "react";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, CheckCircle, Clock } from "lucide-react";
 
-export default function DashboardHome() {
-    const workspaceId = "m175gc4gzmhv2r05f0a4mw53rh814jv5" as any;
-    const stats = useQuery(api.dashboard.getStats, { workspaceId });
+export default function DashboardPage() {
+    const workspace = useQuery(api.workspaces.getDefault);
+    const createWorkspace = useMutation(api.workspaces.createDefault);
+
+    useEffect(() => {
+        if (workspace === null) {
+            createWorkspace();
+        }
+    }, [workspace, createWorkspace]);
+
+    const stats = useQuery(api.dashboard.getStats, workspace ? { workspaceId: workspace._id } : "skip");
 
     // Default values while loading
     const activeAgents = stats?.activeAgents ?? 0;

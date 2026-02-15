@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { useMutation } from "convex/react";
+import { useState, useEffect } from "react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Key, Smartphone, MessageSquare } from "lucide-react";
+import { Eye, EyeOff, Save, Key, Smartphone, MessageSquare } from "lucide-react";
 
 export default function SettingsPage() {
-    const workspaceId = "m175gc4gzmhv2r05f0a4mw53rh814jv5" as any; // TODO: Get from context/auth
+    const workspace = useQuery(api.workspaces.getDefault);
+    const workspaceId = workspace?._id;
+
+    // Queries
+    const apiKeys = useQuery(api.apiKeys.getActive, workspaceId ? { workspaceId } : "skip") || [];
+    const telegramCreds = useQuery(api.messaging.getCredentials, workspaceId ? { workspaceId, channel: "telegram" } : "skip");
 
     // API Keys State
     const [openaiKey, setOpenaiKey] = useState("");
@@ -22,6 +27,10 @@ export default function SettingsPage() {
     const saveMessaging = useMutation(api.messaging.save);
 
     const handleSaveApiKeys = async () => {
+        if (!workspaceId) {
+            toast.error("No workspace found");
+            return;
+        }
         if (openaiKey) {
             await saveApiKey({ workspaceId, provider: "openai", encryptedKey: openaiKey }); // In prod: encrypt before sending
         }
@@ -32,6 +41,10 @@ export default function SettingsPage() {
     };
 
     const handleSaveMessaging = async () => {
+        if (!workspaceId) {
+            toast.error("No workspace found");
+            return;
+        }
         if (telegramToken) {
             await saveMessaging({
                 workspaceId,
